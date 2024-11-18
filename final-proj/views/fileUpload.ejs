@@ -1,0 +1,8 @@
+<%- include('partials/header') %>
+    <h1>Welcome to Photo Upload Page</h1>
+    <form action="/fileUpload/single" enctype="multipart/form-data" method="post">
+        <input type="file" name="myFile" required>
+        <button type="submit">Upload</button>
+        <p name="pResult"><%=strResult%></p>
+    </form>
+<%- include('partials/footer') %>
