@@ -1,0 +1,47 @@
+<%- include('partials/header') %>
+<script src="https://unpkg.com/validator@13.12.0/validator.min.js"></script>
+<div class="container p-5 my-5 border">
+<form id="formAdd" action="/addUser" method="post">
+    <div class="row">
+        <label for="loginID" class="col-sm-2 control-label">Login ID:</label>
+        <div class="col-sm-8">
+            <input type="text" class="form-control" name="loginID" value="<%= loginID %>" placeholder="Login ID">
+        </div>
+    </div>
+    <div class="row">
+        <label for="name" class="col-sm-2 control-label">Display Name:</label>
+        <div class="col-sm-8">
+            <input type="text" class="form-control" name="name" value="<%= name %>" placeholder="Display Name">
+        </div>
+    </div>
+    <div class="row">
+        <label for="password" class="col-sm-2 control-label">Password:</label>
+        <div class="col-sm-8">
+            <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-4"></div>
+        <div class="col-sm-2">
+            <button type="submit" class="btn btn-outline-primary">Create</button>
+        </div>
+    </div>
+    <div class="row">
+        <% if (msg == "exist") { %>
+            <h3 class="text-danger col-sm-offset-2 col-sm-6">User Already Exists!</h3>
+        <% } %>
+    </div>
+</form>
+</div>
+<script>
+    document.getElementById('formAdd').addEventListener('submit', event => {
+        const pwd = document.getElementById('password').value;
+        if (!validator.isStrongPassword(pwd, {minLength:6, minUppercase:1, minSymbols:0})) {
+            event.preventDefault();
+            alert("Password must be 6 characters or more, with at least 1 uppercase character");
+            return false;
+        }
+        return true;
+    })
+</script>
+<%- include('partials/footer') %>
