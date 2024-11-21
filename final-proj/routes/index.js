@@ -5,6 +5,11 @@ const client = new MongoClient("mongodb://localhost:27017");
 const { isAuthenticated } = require("./authenticate.js");
 
 /* GET home page. */
+router.use((req, res, next) => {
+  res.locals.currentUser = req.session.loginID;
+  next();
+});
+
 router.get('/', isAuthenticated, function(req, res, next) {
   res.render('index', { title: 'Photo to Share Share' });
 });
@@ -38,33 +43,6 @@ router.get('/logout', (req, res, next) => {
   if (req.session.loginID) {
     delete req.session.loginID;
     res.redirect('/login');
-  }
-});
-
-router.get('/addUser', (req, res, next) => {
-  if (!req.body.loginID) {
-    req.body.loginID = "";
-    req.body.name = "";
-    req.body.msg = "";
-  }
-  res.render('addUser', req.body);
-})
-
-router.post('/addUser', async (req, res, next) => {
-  try {
-    await client.connect();
-    result = await client.db("PhotoShareShare").collection("user_profile").findOne({login_id: req.body.loginID});
-    if (!result) {
-      rtn = await client.db("PhotoShareShare").collection("user_profile").insertOne(req.body);
-      res.redirect('/login');
-    } else {
-      req.body.msg = "exist";
-      res.render('addUser', req.body);
-    }
-  } catch {
-    console.log("Failed to insert record");
-  } finally {
-    await client.close();
   }
 });
 
