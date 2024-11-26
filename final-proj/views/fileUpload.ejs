@@ -1,8 +1,32 @@
 <%- include('partials/header') %>
     <h1>Welcome to Photo Upload Page</h1>
     <form action="/fileUpload/single" enctype="multipart/form-data" method="post">
-        <input type="file" name="myFile" required>
+        <input type="file" name="myFile" id="fileInput" required>
         <button type="submit">Upload</button>
+        <img id="imagePreview" style="max-width: 300px; display: none;" alt="Image Preview" />
         <p name="pResult"><%=strResult%></p>
+        <img id="imgOnServer" alt="Image On Server" src="<%=imgOnServer%>" />
     </form>
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const imagePreview = document.getElementById('imagePreview');
+
+        fileInput.addEventListener('change', function() {
+            const file = fileInput.files[0];
+            if (file) {
+                // Create a URL for the selected file
+                const objectURL = URL.createObjectURL(file);                
+                // Set the src of the image to the object URL
+                imagePreview.src = objectURL;
+                imagePreview.style.display = 'block';
+                // Optional: Revoke the object URL after it's no longer needed
+                imagePreview.onload = function() {
+                    URL.revokeObjectURL(objectURL);
+                };
+            } else {
+                imagePreview.style.display = 'none';
+            }
+        });
+    </script>
+
 <%- include('partials/footer') %>
