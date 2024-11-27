@@ -3,6 +3,8 @@ var router = express.Router();
 const {MongoClient, ObjectId} = require("mongodb");
 const client = new MongoClient("mongodb://localhost:27017");
 const { isAuthenticated } = require("./authenticate.js");
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 /* GET home page. */
 router.use((req, res, next) => {
@@ -27,13 +29,17 @@ router.post('/login', async (req, res, next) => {
     if (result == null) {
       res.redirect("/login?msg=noexist");
     } else {
-      if (result["password"] == req.body.password) {
-        req.session.loginID = req.body.loginID;
-        res.redirect('/');
-      } else {
-        res.redirect("/login?msg=invalid");
-      }
+      bcrypt.compare(req.body.password, result["password"], (err, result) => {
+        if (err)
+          console.error(err);
+        else if (result) {
+          req.session.loginID = req.body.loginID;
+          res.redirect('/');
+        } else
+          res.redirect("/login?msg=invalid");
+      });
     }
+    if (req.session.msg) delete req.session.msg;
   } finally {
     await client.close();
   }

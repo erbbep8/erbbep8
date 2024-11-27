@@ -16,6 +16,7 @@
                 <input type="text" class="form-control" name="loginID" id="loginID" value="<%= loginID %>"/>
             </div>
         </div>
+        <div class="row"><br></div>
         <div class="row">
             <div class="col-sm-2"></div>
             <label for="password" class="col-sm-offset-2 col-sm-2 control-label">Password:</label>
@@ -23,6 +24,7 @@
                 <input type="password" class="form-control" placeholder="Password" id="password" name="password"/>
             </div>
         </div>
+        <div class="row"><br></div>
         <div class="row">
             <div class="col-sm-4"></div>
             <div class="col-sm-2">
@@ -32,11 +34,14 @@
                 <button type="button" class="btn btn-outline-secondary" onclick="window.location.href='/users/addUser'">New User</button>
             </div>
         </div>
+        <div class="row"><br></div>
         <div class="row">
             <% if (msg == "invalid") { %>
                 <h3 class="text-danger col-sm-offset-2 col-sm-6">Invalid Password</h3>
             <% } else if (msg == "noexist") { %>
                 <h3 class="text-danger col-sm-offset-2 col-sm-6">User Profile Not Found</h3>
+            <% } else if (msg == "newdone") { %>
+                <h3 class="text-danger col-sm-offset-2 col-sm-6">New User Profile Created</h3>
             <% } %>
         </div>
     </form>
