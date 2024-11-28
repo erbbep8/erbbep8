@@ -8,7 +8,8 @@ var session = require('express-session');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
-const fileUpload = require('./routes/fileUpload')
+const fileUpload = require('./routes/fileUpload');
+const login = require('./routes/login');
 
 var app = express();
 
@@ -26,8 +27,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({secret: 'phtotshareshare', cookie: { maxAge: 300000 }}));
 
 app.use('/', index);
+app.use('/login', login);
 app.use('/users', users);
-app.use('/fileUpload', fileUpload)
+app.use('/fileUpload', fileUpload);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
