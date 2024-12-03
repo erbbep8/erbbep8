@@ -1,32 +1,259 @@
 <%- include('partials/header') %>
-    <h1>Welcome to Photo Upload Page</h1>
-    <form action="/fileUpload/single" enctype="multipart/form-data" method="post">
-        <input type="file" name="myFile" id="fileInput" required>
-        <button type="submit">Upload</button>
-        <img id="imagePreview" style="max-width: 300px; display: none;" alt="Image Preview" />
-        <p name="pResult"><%=strResult%></p>
-        <img id="imgOnServer" alt="Image On Server" src="<%=imgOnServer%>" />
-    </form>
+    <style>
+        #fileUploadCompent form {
+            width: 600px;
+            background: #ccc;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid black;
+        }
+
+        #fileUploadCompent form ol {
+            padding-left: 0;
+        }
+
+        #fileUploadCompent form li,
+        #fileUploadCompent div>p {
+            background: #eee;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            list-style-type: none;
+            border: 1px solid black;
+        }
+
+        #fileUploadCompent form img {
+            height: 64px;
+            order: 1;
+        }
+
+        #fileUploadCompent form p {
+            line-height: 32px;
+            padding-left: 10px;
+        }
+
+        #fileUploadCompent form .file-label,
+        #fileUploadCompent form button {
+            background-color: #7F9CCB;
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: 1px ridge black;
+            font-size: 0.8rem;
+            height: auto;
+        }
+
+        #fileUploadCompent form .file-label:hover,
+        #fileUploadCompent form button:hover {
+            background-color: #2D5BA3;
+            color: white;
+        }
+
+        #fileUploadCompent form .file-label:active,
+        #fileUploadCompent form button:active {
+            background-color: #0D3F8F;
+            color: white;
+        }
+    </style>
+    <div id="fileUploadCompent">
+        <h2 style="text-align: center;">Welcome to Photo Upload Page</h2>
+        <form id="uploadForm" action="/fileUpload/different" enctype="multipart/form-data" method="post">
+            <p name="pResult">
+                <%=fileUploadObj.strResult%>
+            </p>
+            <div class="mb-3">
+                <label for="fileInput" class="file-label form-label">Choose Main Photo</label>
+                <input type="file" id="fileInput" name="mainFile" class="form-control" accept="image/*" placeholder=""
+                     required style="opacity: 0; position: absolute;" />
+                <div id="MainPreview" class="preview">
+                    <p>No files currently selected for upload</p>
+                </div>
+                <div class="row justify-content-center align-items-center g-2">
+                    <div class="col"><label for="main_ISO" class="form-label">ISO:</label></div>
+                    <div class="col"><input type="number" class="form-control" id="main_ISO" name="main_ISO" required></div>
+                </div>
+                <div class="row justify-content-center align-items-center g-2">
+                    <div class="col"><label for="main_aperture" class="form-label">Aperture:</label></div>
+                    <div class="col"><input type="text" class="form-control" id="main_aperture" name="main_aperture" required></div>
+                </div>
+                <div class="row justify-content-center align-items-center g-2">
+                    <div class="col"><label for="main_shutter" class="form-label">Shutter:</label></div>
+                    <div class="col"><input type="text" class="form-control" id="main_shutter" name="main_shutter" required></div>
+                </div>
+                <div class="row justify-content-center align-items-center g-2">
+                    <div class="col"><label for="main_EV" class="form-label">EV +/-:</label></div>
+                    <div class="col"><input type="text" class="form-control" id="main_EV" name="main_EV" required></div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="raw1_inputFile" class="file-label form-label">Choose Raw Photo 1</label>
+                <input type="file" id="raw1_inputFile" name="raw1_inputFile" class="form-control" accept="image/*" placeholder=""
+                     required style="opacity: 0; position: absolute;" />
+                <div id="raw1_Preview1" class="preview">
+                    <p>No files currently selected for upload</p>
+                </div>
+                <div class="row justify-content-center align-items-center g-2">
+                    <div class="col"><label for="raw1_ISO" class="form-label">ISO:</label></div>
+                    <div class="col"><input type="number" class="form-control" id="raw1_ISO" name="raw1_ISO" required></div>
+                </div>
+                <div class="row justify-content-center align-items-center g-2">
+                    <div class="col"><label for="raw1_aperture" class="form-label">Aperture:</label></div>
+                    <div class="col"><input type="text" class="form-control" id="raw1_aperture" name="raw1_aperture" required></div>
+                </div>
+                <div class="row justify-content-center align-items-center g-2">
+                    <div class="col"><label for="raw1_shutter" class="form-label">Shutter:</label></div>
+                    <div class="col"><input type="text" class="form-control" id="raw1_shutter" name="raw1_shutter" required></div>
+                </div>
+                <div class="row justify-content-center align-items-center g-2">
+                    <div class="col"><label for="raw1_EV" class="form-label">EV +/-:</label></div>
+                    <div class="col"><input type="text" class="form-control" id="raw1_EV" name="raw1_EV" required></div>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="raw2_inputFile" class="file-label form-label">Choose Raw Photo 1</label>
+                <input type="file" id="raw2_inputFile" name="raw2_inputFile" class="form-control" accept="image/*" placeholder=""
+                     required style="opacity: 0; position: absolute;" />
+                <div id="raw2_Preview1" class="preview">
+                    <p>No files currently selected for upload</p>
+                </div>
+                <div class="row justify-content-center align-items-center g-2">
+                    <div class="col"><label for="raw2_ISO" class="form-label">ISO:</label></div>
+                    <div class="col"><input type="number" class="form-control" id="raw2_ISO" name="raw2_ISO" required></div>
+                </div>
+                <div class="row justify-content-center align-items-center g-2">
+                    <div class="col"><label for="raw2_aperture" class="form-label">Aperture:</label></div>
+                    <div class="col"><input type="text" class="form-control" id="raw2_aperture" name="raw2_aperture" required></div>
+                </div>
+                <div class="row justify-content-center align-items-center g-2">
+                    <div class="col"><label for="raw2_shutter" class="form-label">Shutter:</label></div>
+                    <div class="col"><input type="text" class="form-control" id="raw2_shutter" name="raw2_shutter" required></div>
+                </div>
+                <div class="row justify-content-center align-items-center g-2">
+                    <div class="col"><label for="raw2_EV" class="form-label">EV +/-:</label></div>
+                    <div class="col"><input type="text" class="form-control" id="raw2_EV" name="raw2_EV" required></div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">
+                Upload
+            </button>
+        </form>
+    </div>
     <script>
+        const maxSize = 10 * 1024 * 1024;
+
         const fileInput = document.getElementById('fileInput');
-        const imagePreview = document.getElementById('imagePreview');
+        const MainPreview = document.getElementById('MainPreview');
+        fileInput.style.opacity = 0;
+        fileInput.addEventListener('change', validFileInput);
+        fileInput.addEventListener('change', function () { updateImageDisplay(MainPreview) });
 
-        fileInput.addEventListener('change', function() {
-            const file = fileInput.files[0];
-            if (file) {
-                // Create a URL for the selected file
-                const objectURL = URL.createObjectURL(file);                
-                // Set the src of the image to the object URL
-                imagePreview.src = objectURL;
-                imagePreview.style.display = 'block';
-                // Optional: Revoke the object URL after it's no longer needed
-                imagePreview.onload = function() {
-                    URL.revokeObjectURL(objectURL);
-                };
-            } else {
-                imagePreview.style.display = 'none';
+        const raw1_input = document.getElementById('raw1_inputFile');
+        const raw1_Preview = document.getElementById('raw1_Preview1');
+        raw1_input.style.opacity = 0;
+        raw1_input.addEventListener('change', validFileInput);
+        raw1_input.addEventListener('change', function () { updateImageDisplay(raw1_Preview) });
+
+        const raw2_input = document.getElementById('raw2_inputFile');
+        const raw2_Preview = document.getElementById('raw2_Preview1');
+        raw2_input.style.opacity = 0;
+        raw2_input.addEventListener('change', validFileInput);
+        raw2_input.addEventListener('change', function () { updateImageDisplay(raw2_Preview) });
+
+        function validFileInput(event) {
+            const files = event.target.files;
+            if (files) {
+                for (const file of files) {
+                    if (!validFileType(file)) {
+                        alert('Not a image file type!');
+                        event.target.value = '';
+                        return false;
+                    }
+                    if (file.size > maxSize) {
+                        alert('File is large than ' + returnFileSize(maxSize) + '!');
+                        event.target.value = '';
+                        return false;
+                    }
+                }
             }
-        });
-    </script>
+        }
 
-<%- include('partials/footer') %>
+        function updateImageDisplay(preview) {
+            while (preview.firstChild) {
+                preview.removeChild(preview.firstChild);
+            }
+
+            const curFiles = event.target.files;
+            if (curFiles.length === 0) {
+                const para = document.createElement('p');
+                para.textContent = 'No files currently selected for upload';
+                preview.appendChild(para);
+            } else {
+                const list = document.createElement('ol');
+                preview.appendChild(list);
+
+                for (const file of curFiles) {
+                    const listItem = document.createElement('li');
+                    const para = document.createElement('p');
+
+                    if (validFileType(file)) {
+                        para.textContent = `File name ${file.name}, file size ${returnFileSize(file.size)}.`;
+                        const image = document.createElement('img');
+                        image.src = URL.createObjectURL(file);
+
+                        listItem.appendChild(image);
+                        listItem.appendChild(para);
+                    } else {
+                        para.textContent = `File name ${file.name}: Not a valid file type. Update your selection.`;
+                        listItem.appendChild(para);
+                    }
+
+                    list.appendChild(listItem);
+                }
+            }
+        }
+
+        const fileTypes = [
+            'image/apng',
+            'image/bmp',
+            'image/gif',
+            'image/jpeg',
+            'image/pjpeg',
+            'image/png',
+            'image/svg+xml',
+            'image/tiff',
+            'image/webp',
+            `image/x-icon`
+        ];
+
+        function validFileType(file) {
+            return fileTypes.includes(file.type);
+        }
+
+        function returnFileSize(number) {
+            if (number < 1024) {
+                return number + 'bytes';
+            } else if (number >= 1024 && number < 1048576) {
+                return (number / 1024).toFixed(1) + 'KB';
+            } else if (number >= 1048576) {
+                return (number / 1048576).toFixed(1) + 'MB';
+            }
+        }
+
+        // document.getElementById('uploadForm').addEventListener('submit', function(event) {
+        //     event.preventDefault();
+        //     const formData = new FormData(this);
+        //     fetch('/fileUpload/different', {
+        //         method: 'POST',
+        //         body: formData
+        //     })
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         console.log(data);
+        //         alert('Files uploaded successfully!');
+        //     })
+        //     .catch(error => {
+        //         console.error('Error:', error);
+        //     });
+        // });
+    </script>
+    <%- include('partials/footer') %>
