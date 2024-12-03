@@ -32,6 +32,8 @@ app.use('/', index);
 app.use('/login', login);
 app.use('/users', users);
 app.use('/fileUpload', fileUpload)
+app.use('/photolist', photolist);
+app.use('/list', photodetail);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
