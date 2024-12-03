@@ -135,7 +135,7 @@ router.get('/delUser', async (req, res, next) => {
   }
 });
 
-router.get('/:uid/:filename', (req, res, next) => {
+router.get('/:uid/:filename', isAuthenticated, (req, res, next) => {
   let filePath = path.join(__dirname, "/../data/", req.params.uid + "/" + req.params.filename)
   fs.access(filePath, fs.constants.F_OK, (err) => {
     if (err) {return res.status(404).send('File not found!');}
@@ -143,5 +143,23 @@ router.get('/:uid/:filename', (req, res, next) => {
     res.sendFile(filePath);
   })
 });
+
+router.get('/test', isAuthenticated, async (req, res, next) => {
+  try {
+    await client.connect();
+    let searchcondition = {login_id: req.query.album_id, filename: req.query.filename, likeBy: {$ne: req.session.loginID }};
+    result = await client.db("PhotoShareShare").collection("photo_collection").updateOne(
+      searchcondition,
+      { $inc: {likeCount: 1},
+        $push: {likeBy: req.session.loginID}
+      }
+    );
+    res.json(result);
+  } catch (err) {
+    console.log(err.name, err.message)
+  } finally {
+    client.close;
+  }
+})
 
 module.exports = router;

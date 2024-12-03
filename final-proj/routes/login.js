@@ -7,6 +7,11 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 /* GET home page. */
+router.use((req, res, next) => {
+  res.locals.currentUser = req.session.loginID;
+  next();
+});
+
 router.get('/', function(req, res, next) {
   let msg = "";
   if (req.query.msg) msg = req.query.msg;
@@ -25,6 +30,7 @@ router.post('/', async (req, res, next) => {
           console.error(err);
         else if (result) {
           req.session.loginID = req.body.loginID;
+          if (req.session.msg) delete req.session.msg;
           res.redirect('/');
         } else
           res.redirect("/login?msg=invalid");
