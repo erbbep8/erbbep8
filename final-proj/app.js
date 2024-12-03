@@ -8,8 +8,10 @@ var session = require('express-session');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
-const fileUpload = require('./routes/fileUpload');
+const fileUpload = require('./routes/fileUpload')
 const login = require('./routes/login');
+const photolist = require("./routes/photolist");
+const photodetail = require("./routes/list");
 
 var app = express();
 
@@ -24,12 +26,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(session({secret: 'phtotshareshare', cookie: { maxAge: 300000 }}));
+app.use(session({secret: 'phtotshareshare', cookie: { maxAge: 30000000 }}));
 
 app.use('/', index);
 app.use('/login', login);
 app.use('/users', users);
-app.use('/fileUpload', fileUpload);
+app.use('/fileUpload', fileUpload)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
