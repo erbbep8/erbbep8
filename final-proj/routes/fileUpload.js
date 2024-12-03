@@ -3,7 +3,7 @@ var router = express.Router();
 const fs = require("fs");
 const path = require("path");
 const multer = require("multer");
-const pathUpload = "data/upload/";
+const pathUpload = "data/";
 const upload = multer({
   dest: pathUpload,
   limits: { fileSize: 10 * 1024 * 1024 /* 10M */ },
@@ -22,6 +22,11 @@ const { isAuthenticated } = require("./authenticate.js");
 function utf8Name(originalname) {
   return Buffer.from(originalname, "latin1").toString("UTF-8");
 }
+
+router.use((req, res, next) => {
+  res.locals.currentUser = req.session.loginID;
+  next();
+});
 
 router
   .get("/", isAuthenticated, (req, res, next) => {
@@ -66,40 +71,43 @@ router
     ]),
     async (req, res, next) => {
       if (!fs.existsSync(pathUpload)) fs.mkdirSync(pathUpload);
-      let utf8MainFileName, utf8raw1_FileName, utf8raw2_FileName;
-      if (req.files.mainFile[0]) {
+      if (!fs.existsSync(pathUpload + req.session.loginID))
+        fs.mkdirSync(pathUpload + req.session.loginID);
+
+      let utf8MainFileName = "", utf8raw1_FileName = "", utf8raw2_FileName = "";
+      if (req.files.mainFile) {
         utf8MainFileName = utf8Name(req.files.mainFile[0].originalname);
         fs.renameSync(
           req.files.mainFile[0].path,
-          pathUpload + utf8MainFileName
+          pathUpload + req.session.loginID + "/" + utf8MainFileName
         );
       }
-      if (req.files.raw1_inputFile[0]) {
+      if (req.files.raw1_inputFile) {
         utf8raw1_FileName = utf8Name(req.files.raw1_inputFile[0].originalname);
         fs.renameSync(
           req.files.raw1_inputFile[0].path,
-          pathUpload + utf8raw1_FileName
+          pathUpload + req.session.loginID + "/raw1_" + utf8raw1_FileName
         );
       }
-      if (req.files.raw2_inputFile[0]) {
+      if (req.files.raw2_inputFile) {
         utf8raw2_FileName = utf8Name(req.files.raw2_inputFile[0].originalname);
         fs.renameSync(
           req.files.raw2_inputFile[0].path,
-          pathUpload + utf8raw2_FileName
+          pathUpload + req.session.loginID + "/raw2_" + utf8raw2_FileName
         );
       }
-      let main_ISO = req.body.main_ISO;
-      let main_aperture = req.body.main_aperture;
-      let main_shutter = req.body.main_shutter;
-      let main_EV = req.body.main_EV;
-      let raw1_ISO = req.body.raw1_ISO;
-      let raw1_aperture = req.body.raw1_aperture;
-      let raw1_shutter = req.body.raw1_shutter;
-      let raw1_EV = req.body.raw1_EV;
-      let raw2_ISO = req.body.raw2_ISO;
-      let raw2_aperture = req.body.raw2_aperture;
-      let raw2_shutter = req.body.raw2_shutter;
-      let raw2_EV = req.body.raw2_EV;
+      let main_ISO = req.body.main_ISO || 0;
+      let main_aperture = req.body.main_aperture || "";
+      let main_shutter = req.body.main_shutter || "";
+      let main_EV = req.body.main_EV || "";
+      let raw1_ISO = req.body.raw1_ISO || 0;
+      let raw1_aperture = req.body.raw1_aperture || "";
+      let raw1_shutter = req.body.raw1_shutter || "";
+      let raw1_EV = req.body.raw1_EV || "";
+      let raw2_ISO = req.body.raw2_ISO || 0;
+      let raw2_aperture = req.body.raw2_aperture || "";
+      let raw2_shutter = req.body.raw2_shutter || "";
+      let raw2_EV = req.body.raw2_EV || "";
 
       try {
         await client.connect();
@@ -136,13 +144,9 @@ router
         await client.close();
       }
 
-      fileUploadObj.strResult =
-        utf8MainFileName +
-        " File Uploaded! ; Raw file 1: " +
-        utf8raw1_FileName +
-        " File uploaded! ; Raw file 2: " +
-        utf8raw2_FileName +
-        " File uploaded!";
+      fileUploadObj.strResult = utf8MainFileName +" File Uploaded!"
+      if(utf8raw1_FileName) fileUploadObj.strResult += " ; Raw file 1: " + utf8raw1_FileName + " File uploaded!"
+      if(utf8raw2_FileName) fileUploadObj.strResult += " ; Raw file 2: " + utf8raw2_FileName + " File uploaded!"
       fileUploadObj.imgOnServer = "/fileUpload/" + utf8MainFileName;
 
       res.render("fileUpload", { fileUploadObj });
