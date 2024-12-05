@@ -1,5 +1,7 @@
 var express = require('express');
 var router = express.Router();
+const fs = require("fs");
+const path = require('path');
 const {MongoClient, ObjectId} = require("mongodb");
 const client = new MongoClient("mongodb://localhost:27017");
 const { isAuthenticated } = require("./authenticate.js");
@@ -10,67 +12,32 @@ router.use((req, res, next) => {
   next();
 });
 
-router.get('/', isAuthenticated, function(req, res, next) {
-  res.render('index', { title: 'Photo to Share Share' });
-});
-
-router.get('/login', function(req, res, next) {
-  let msg = "";
-  if (req.query.msg) msg = req.query.msg;
-  res.render('login', {loginID: req.session.loginID, msg: msg});
-});
-
-router.post('/login', async (req, res, next) => {
+router.get('/', isAuthenticated, async (req, res, next) => {
+  console.log(req.query);
   try {
+    console.log(req.session.loginID);
     await client.connect();
-    result = await client.db("PhotoShareShare").collection("user_profile").findOne({login_id: req.body.loginID});
-    if (result == null) {
-      res.redirect("/login?msg=noexist");
-    } else {
-      if (result["password"] == req.body.password) {
-        req.session.loginID = req.body.loginID;
-        res.redirect('/');
-      } else {
-        res.redirect("/login?msg=invalid");
-      }
-    }
-  } finally {
+    profile = await client.db("PhotoShareShare").collection("user_profile").find({login_id: req.session.loginID}).toArray();
+    result = await client.db("PhotoShareShare").collection("user_profile").find({login_id: {$ne: req.session.loginID}}).sort({filename: 1}).toArray();
+
+    //res.send({profile: result1, result: result});
+    res.render("albumlist", {profile: profile, result: result});
+  } 
+    catch (err) {
+    console.log(err.message);
+  } 
+    finally {
     await client.close();
   }
 });
 
-router.get('/logout', (req, res, next) => {
-  if (req.session.loginID) {
-    delete req.session.loginID;
-    res.redirect('/login');
-  }
-});
+router.get('/top/:uid/:filename', isAuthenticated, (req, res, next) => {
+  let filePath = path.join(__dirname, "/../data/", req.params.uid + "/" + req.params.filename)
+  fs.access(filePath, fs.constants.F_OK, (err) => {
+    if (err) {return res.status(404).send('File not found!');}
 
-router.get('/addUser', (req, res, next) => {
-  if (!req.body.loginID) {
-    req.body.loginID = "";
-    req.body.name = "";
-    req.body.msg = "";
-  }
-  res.render('addUser', req.body);
-})
-
-router.post('/addUser', async (req, res, next) => {
-  try {
-    await client.connect();
-    result = await client.db("PhotoShareShare").collection("user_profile").findOne({login_id: req.body.loginID});
-    if (!result) {
-      rtn = await client.db("PhotoShareShare").collection("user_profile").insertOne(req.body);
-      res.redirect('/login');
-    } else {
-      req.body.msg = "exist";
-      res.render('addUser', req.body);
-    }
-  } catch {
-    console.log("Failed to insert record");
-  } finally {
-    await client.close();
-  }
+    res.sendFile(filePath);
+  })
 });
 
 module.exports = router;
