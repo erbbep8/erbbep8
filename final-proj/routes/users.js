@@ -73,7 +73,10 @@ router.post('/editUser', isAuthenticated, upload.single("profile_pic"), async (r
   try {
     req.body.password = await bcrypt.hash(req.body.password, saltRounds);
     let pic_filename = "";
-    if (req.file) pic_filename = req.file.originalname;
+    if (req.file)
+      pic_filename = req.file.originalname;
+    else
+      pic_filename = req.body.old_photo;
 
     try {
       await client.connect();
@@ -87,16 +90,16 @@ router.post('/editUser', isAuthenticated, upload.single("profile_pic"), async (r
       );
   
       if (result) {
-        if (!fs.existsSync('./data/' + req.body.login_id)) {
-          fs.mkdirSync('./data/' + req.body.login_id);
-        }
-  
-        if (req.body.old_photo != "") {
-          let file = "./data/" + req.body.login_id + "/" + req.body.old_photo;
-          if (fs.existsSync(file)) fs.unlinkSync(file);
-        }
-
         if (req.file) {
+          if (!fs.existsSync('./data/' + req.body.login_id)) {
+            fs.mkdirSync('./data/' + req.body.login_id);
+          }
+  
+          if (req.body.old_photo != "") {
+            let file = "./data/" + req.body.login_id + "/" + req.body.old_photo;
+            if (fs.existsSync(file)) fs.unlinkSync(file);
+          }
+
           let newfile = "./data/" + req.body.login_id + "/" + req.file.originalname;
           fs.renameSync(req.file.path, newfile);
         }

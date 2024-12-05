@@ -42,6 +42,12 @@
             <input type="password" class="form-control" id="password" name="password" required>
         </div>
     </div>
+    <div class="row">
+        <label for="reenter" class="col-sm-2 control-label">Re-enter Password:</label>
+        <div class="col-sm-8">
+            <input type="password" class="form-control" id="reenter" name="reenter" required>
+        </div>
+    </div>
     <div class="row"><br></div>
     <div class="row">
         <label for="photo" class="col-sm-2 control-label">Profile Picture:</label>
@@ -92,7 +98,14 @@
         const pwd = document.getElementById('password').value;
         if (!validator.isStrongPassword(pwd, {minLength:6, minUppercase:1, minSymbols:0})) {
             event.preventDefault();
-            alert("Password must be 6 characters or more, with at least 1 uppercase character");
+            alert("Password must be 6 characters or more, with at least 1 uppercase character and 1 lowercase character");
+            return false;
+        }
+
+        const retype = document.getElementById('reenter').value;
+        if (pwd != retype) {
+            event.preventDefault();
+            alert("Two password inputs are not identical. Please re-enter");
             return false;
         }
         return true;
