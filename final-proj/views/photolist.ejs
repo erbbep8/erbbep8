@@ -1,5 +1,5 @@
 <%- include('partials/header') %> 
-    <table><tr><td><h1>PHOTO LIST</h1></td><td><h1 style="color:rgb(0, 68, 255);">(<%= result[0].login_id %>)</h1></tr></td></table>
+    <table><tr><td><h1>PHOTO LIST</h1></td><td><h1 style="color:rgb(0, 68, 255);">(<%= album %>)</h1></tr></td></table>
     <script>
         const likeThis = async (anchor, filename, album) => {
           event.preventDefault();
@@ -38,7 +38,7 @@
         }
       </script>
 
-    <h5>All photos uploaded by the photographer <%= result[0].login_id %> will be displayed in this page. ENJOY! </h5>
+    <h5>All photos uploaded by the photographer <%= album %> will be displayed in this page. ENJOY! </h5>
     <table class="table table-bordered">
             <% result.forEach((item) => { %>
             <tr>

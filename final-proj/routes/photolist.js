@@ -17,8 +17,8 @@ router.get('/', isAuthenticated, async (req, res, next) => {
                                likeCount: 1,
                                liked: { $cond: { if: { $in: [req.session.loginID, "$likeBy"]}, then: 1, else: 0}} 
               })}).toArray();//albumlist's ejs name
-      console.log(result);
-      if (result != null) res.render("photolist", { result: result });//create a new ejs
+      //console.log(result);
+      if (result != null) res.render("photolist", { album: req.query.albumlist, result: result });//create a new ejs
     } finally {
       await client.close();
     }
