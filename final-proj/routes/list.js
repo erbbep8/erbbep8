@@ -36,15 +36,15 @@ router.get('/photodetail', async function(req, res, next) {
 router.get('/delePhoto', async function(req, res, next) { 
   try {
   
+    var s ="";
     //找很多req.query字段
+
     await client.connect();
     let db = client.db("PhotoShareShare");
 
-    let aa = await db.collection("photo_collection").findOne( ({ filename:req.query.filename }));
- // await db.collection("photo_collection").deleteOne( ({ login_id:req.body.login_id }));
-    console.log(aa);
+    await db.collection("photo_collection").deleteOne( ({ filename:req.query.filename }));
 
-    res.redirect('/photolist?albumlist='+req.query.filename.split("_")[0] );
+    res.redirect('/photolist?albumlist='+ req.session.loginID);
 
   } finally {
     await client.close();

@@ -11,7 +11,8 @@ const config = {
   colPhoto: "photo_collection",
   baseDir: process.cwd(),
   dataDir: path.join(process.cwd(), "data/"),
-  fileLimits: { fileSize: 1024 * 1024 * 10 },
+  maxSize: 1024 * 1024 * 100, // 100MB
+  fileLimits: { fileSize: 1024 * 1024 * 1000 }, // 100MB
 }
 // setup middleware for config
 const mwConfig = function (req, res, next) {
