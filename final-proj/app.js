@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 
+const { routerConfig } = require('./common_modules/config')
 var index = require('./routes/index');
 var users = require('./routes/users');
 const fileUpload = require('./routes/fileUpload')
@@ -28,6 +29,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({secret: 'phtotshareshare', cookie: { maxAge: 30000000 }}));
 
+app.use(routerConfig)
 app.use('/', index);
 app.use('/login', login);
 app.use('/users', users);

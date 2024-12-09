@@ -3,42 +3,25 @@ var router = express.Router();
 const fs = require("fs");
 const path = require("path");
 const multer = require("multer");
-const pathUpload = "data/";
-const upload = multer({
-  dest: pathUpload,
-  limits: { fileSize: 10 * 1024 * 1024 /* 10M */ },
-});
 const { MongoClient } = require("mongodb");
-const dbConnectString = process.env.dbConnectString;
-const client = new MongoClient(dbConnectString);
-const dbName = "PhotoShareShare";
-const collectionName = "photo_collection";
-const fileUploadObj = {
-  strResult: "",
-  imgOnServer: "",
-};
-const { isAuthenticated } = require("./authenticate.js");
+const { config, helper, isAuthenticated, } = require("../common_modules/config.js");
+const { strDB, dbPSS, colUser, colPhoto, baseDir, dataDir, fileLimits, } = config;
+const { utf8Name, getUniqueFilename, isValidFilename, normalizePath, isPathWithinBaseDir } = helper;
 
-function utf8Name(originalname) {
-  return Buffer.from(originalname, "latin1").toString("UTF-8");
-}
-
-router.use((req, res, next) => {
-  res.locals.currentUser = req.session.loginID;
-  next();
-});
+const client = new MongoClient(strDB);
+const upload = multer({ dest: dataDir, limits: fileLimits, });
+const objFileUpload = { strResult: "", imgOnServer: "", };
 
 router
   .get("/", isAuthenticated, (req, res, next) => {
-    fileUploadObj.strResult = "";
-    res.render("fileUpload", { fileUploadObj });
+    res.render("fileUpload", { objFileUpload: objFileUpload });
   })
   .get("/V3", isAuthenticated, (req, res, next) => {
-    res.render("fileUploadV3", { fileUploadObj });
+    res.render("fileUploadV3", { objFileUpload: objFileUpload });
   });
 
 router.get("/:filename", isAuthenticated, (req, res, next) => {
-  let filePath = path.join(__dirname, "/../data/upload/", req.params.filename);
+  let filePath = path.join(dataDir, res.session.loginID, req.params.filename);
   fs.access(filePath, fs.constants.F_OK, (err) => {
     if (err) {
       return res.status(404).send("File not found!");
@@ -47,53 +30,45 @@ router.get("/:filename", isAuthenticated, (req, res, next) => {
   });
 });
 
-router
-  .post(
-    "/single",
-    isAuthenticated,
-    upload.single("myFile"),
+router.post("/single", isAuthenticated, upload.single("myFile"),
     (req, res, next) => {
-      if (!fs.existsSync(pathUpload)) fs.mkdirSync(pathUpload);
-      let utf8FileName = utf8Name(req.file.originalname);
-      fs.renameSync(req.file.path, pathUpload + utf8FileName);
-      fileUploadObj.strResult = utf8FileName + " File Uploaded!";
-      fileUploadObj.imgOnServer = "/fileUpload/" + utf8FileName;
-      res.render("fileUpload", { fileUploadObj });
+      let utf8FileName = utf8Name(getUniqueFilename(req.file.originalname));
+      fs.renameSync(req.file.path, dataDir + utf8FileName);
+      objFileUpload.strResult = utf8FileName + " File Uploaded!";
+      objFileUpload.imgOnServer = "/fileUpload/" + utf8FileName;
+      res.render("fileUpload", { objFileUpload: objFileUpload });
     }
   )
-  .post(
-    "/different",
-    isAuthenticated,
+
+router.post("/different", isAuthenticated,
     upload.fields([
       { name: "mainFile", maxCount: 1 },
       { name: "raw1_inputFile", maxCount: 1 },
       { name: "raw2_inputFile", maxCount: 1 },
     ]),
     async (req, res, next) => {
-      if (!fs.existsSync(pathUpload)) fs.mkdirSync(pathUpload);
-      if (!fs.existsSync(pathUpload + req.session.loginID))
-        fs.mkdirSync(pathUpload + req.session.loginID);
+      if (!fs.existsSync(dataDir + req.session.loginID)) fs.mkdirSync(dataDir + req.session.loginID);
 
       let utf8MainFileName = "", utf8raw1_FileName = "", utf8raw2_FileName = "";
       if (req.files.mainFile) {
-        utf8MainFileName = utf8Name(req.files.mainFile[0].originalname);
+        utf8MainFileName = utf8Name(getUniqueFilename(req.files.mainFile[0].originalname));
         fs.renameSync(
           req.files.mainFile[0].path,
-          pathUpload + req.session.loginID + "/" + utf8MainFileName
+          dataDir + req.session.loginID + "/" + utf8MainFileName
         );
       }
       if (req.files.raw1_inputFile) {
-        utf8raw1_FileName = utf8Name(req.files.raw1_inputFile[0].originalname);
+        utf8raw1_FileName = utf8Name(getUniqueFilename(req.files.raw1_inputFile[0].originalname));
         fs.renameSync(
           req.files.raw1_inputFile[0].path,
-          pathUpload + req.session.loginID + "/raw1_" + utf8raw1_FileName
+          dataDir + req.session.loginID + "/raw1_" + utf8raw1_FileName
         );
       }
       if (req.files.raw2_inputFile) {
-        utf8raw2_FileName = utf8Name(req.files.raw2_inputFile[0].originalname);
+        utf8raw2_FileName = utf8Name(getUniqueFilename(req.files.raw2_inputFile[0].originalname));
         fs.renameSync(
           req.files.raw2_inputFile[0].path,
-          pathUpload + req.session.loginID + "/raw2_" + utf8raw2_FileName
+          dataDir + req.session.loginID + "/raw2_" + utf8raw2_FileName
         );
       }
       let main_ISO = req.body.main_ISO || 0;
@@ -111,8 +86,7 @@ router
 
       try {
         await client.connect();
-        const db = client.db(dbName);
-        const col = db.collection(collectionName);
+        const col = client.db(dbPSS).collection(colPhoto);
         await col.insertOne({
           login_id: req.session.loginID,
           filename: utf8MainFileName,
@@ -144,39 +118,36 @@ router
         await client.close();
       }
 
-      fileUploadObj.strResult = utf8MainFileName +" File Uploaded!"
-      if(utf8raw1_FileName) fileUploadObj.strResult += " ; Raw file 1: " + utf8raw1_FileName + " File uploaded!"
-      if(utf8raw2_FileName) fileUploadObj.strResult += " ; Raw file 2: " + utf8raw2_FileName + " File uploaded!"
-      fileUploadObj.imgOnServer = "/fileUpload/" + utf8MainFileName;
+      objFileUpload.strResult = utf8MainFileName + " File Uploaded!"
+      if (utf8raw1_FileName) objFileUpload.strResult += " ; Raw file 1: " + utf8raw1_FileName + " File uploaded!"
+      if (utf8raw2_FileName) objFileUpload.strResult += " ; Raw file 2: " + utf8raw2_FileName + " File uploaded!"
+      objFileUpload.imgOnServer = "/fileUpload/" + utf8MainFileName;
 
-      res.render("fileUpload", { fileUploadObj });
+      res.render("fileUpload", { objFileUpload: objFileUpload });
     }
   )
-  .post(
-    "/differentV3",
-    isAuthenticated,
+
+router.post("/differentV3", isAuthenticated,
     upload.fields([
       { name: "mainFile", maxCount: 1 },
       { name: "inputRawFiles", maxCount: 2 },
     ]),
     async (req, res, next) => {
-      if (!fs.existsSync(pathUpload)) fs.mkdirSync(pathUpload);
-      let utf8MainFileName = utf8Name(req.files.mainFile[0].originalname);
-      fs.renameSync(req.files.mainFile[0].path, pathUpload + utf8MainFileName);
+      let utf8MainFileName = utf8Name(getUniqueFilename(req.files.mainFile[0].originalname));
+      fs.renameSync(req.files.mainFile[0].path, dataDir + utf8MainFileName);
       const utf8FileNames = [];
       let utf8FileName = "";
       if (req.files.inputRawFiles) {
         for (let f of req.files.inputRawFiles) {
-          utf8FileName = utf8Name(f.originalname);
+          utf8FileName = utf8Name(getUniqueFilename(f.originalname));
           utf8FileNames.push(utf8FileName);
-          fs.renameSync(f.path, pathUpload + "raw-" + utf8FileName);
+          fs.renameSync(f.path, dataDir + "raw-" + utf8FileName);
         }
       }
 
       try {
         await client.connect();
-        const db = client.db(dbName);
-        const col = db.collection(collectionName);
+        const col = client.db(dbPSS).collection(colPhoto);
         await col.insertOne({
           login_id: req.session.loginID,
           filename: utf8MainFileName,
@@ -190,16 +161,46 @@ router
       } finally {
         await client.close();
 
-        fileUploadObj.strResult =
+        objFileUpload.strResult =
           utf8MainFileName +
           " File Uploaded! ; Raw files: " +
           utf8FileNames.length +
           " files uploaded";
-        fileUploadObj.imgOnServer = "/fileUpload/" + utf8MainFileName;
+        objFileUpload.imgOnServer = "/fileUpload/" + utf8MainFileName;
 
-        res.render("fileUploadV3", { fileUploadObj });
+        res.render("fileUploadV3", { objFileUpload: objFileUpload });
       }
     }
   );
+
+// router.post('/upload', upload.single('file'), (req, res) => {
+//   try {
+//     const { file } = req;
+//     const { username } = req.body;
+
+//     if (!file) {
+//       return res.status(400).send('No file uploaded.');
+//     }
+//     if (file.size > MAX_FILE_SIZE) {
+//       return res.status(400).send('File is too large.');
+//     }
+//     if (!ALLOWED_FILE_TYPES.includes(file.mimetype)) {
+//       return res.status(400).send('Invalid file type.');
+//     }
+//     // valid and normalize the path
+//     const userDir = path.join(__dirname, 'uploads', username);
+//     const normalizedPath = normalizePath(userDir, file.originalname);
+//     // make sure the path is within the base directory
+//     if (!isPathWithinBaseDir(userDir, normalizedPath)) {
+//       throw new Error('Invalid file path');
+//     }
+//     // move the file to the checked path
+//     fs.renameSync(file.path, normalizedPath);
+
+//     res.send('File uploaded successfully');
+//   } catch (error) {
+//     res.status(400).send(error.message);
+//   }
+// });
 
 module.exports = router;
