@@ -63,14 +63,14 @@ router.post("/different", isAuthenticated,
         utf8raw1_FileName = utf8Name(getUniqueFilename(req.files.raw1_inputFile[0].originalname));
         fs.renameSync(
           req.files.raw1_inputFile[0].path,
-          dataDir + req.session.loginID + "/raw1_" + utf8raw1_FileName
+          dataDir + req.session.loginID + "/" + utf8raw1_FileName
         );
       }
       if (req.files.raw2_inputFile) {
         utf8raw2_FileName = utf8Name(getUniqueFilename(req.files.raw2_inputFile[0].originalname));
         fs.renameSync(
           req.files.raw2_inputFile[0].path,
-          dataDir + req.session.loginID + "/raw2_" + utf8raw2_FileName
+          dataDir + req.session.loginID + "/" + utf8raw2_FileName
         );
       }
       let main_ISO = req.body.main_ISO || 0;
