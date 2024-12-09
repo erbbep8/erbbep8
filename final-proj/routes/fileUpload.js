@@ -14,9 +14,11 @@ const objFileUpload = { strResult: "", imgOnServer: "", };
 
 router
   .get("/", isAuthenticated, (req, res, next) => {
+    objFileUpload.strResult = "";
     res.render("fileUpload", { objFileUpload: objFileUpload });
   })
   .get("/V3", isAuthenticated, (req, res, next) => {
+    objFileUpload.strResult = "";
     res.render("fileUploadV3", { objFileUpload: objFileUpload });
   });
 
@@ -172,35 +174,5 @@ router.post("/differentV3", isAuthenticated,
       }
     }
   );
-
-// router.post('/upload', upload.single('file'), (req, res) => {
-//   try {
-//     const { file } = req;
-//     const { username } = req.body;
-
-//     if (!file) {
-//       return res.status(400).send('No file uploaded.');
-//     }
-//     if (file.size > MAX_FILE_SIZE) {
-//       return res.status(400).send('File is too large.');
-//     }
-//     if (!ALLOWED_FILE_TYPES.includes(file.mimetype)) {
-//       return res.status(400).send('Invalid file type.');
-//     }
-//     // valid and normalize the path
-//     const userDir = path.join(__dirname, 'uploads', username);
-//     const normalizedPath = normalizePath(userDir, file.originalname);
-//     // make sure the path is within the base directory
-//     if (!isPathWithinBaseDir(userDir, normalizedPath)) {
-//       throw new Error('Invalid file path');
-//     }
-//     // move the file to the checked path
-//     fs.renameSync(file.path, normalizedPath);
-
-//     res.send('File uploaded successfully');
-//   } catch (error) {
-//     res.status(400).send(error.message);
-//   }
-// });
 
 module.exports = router;

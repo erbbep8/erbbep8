@@ -139,7 +139,7 @@
         </form>
     </div>
     <script>
-        const maxSize = 10 * 1024 * 1024;
+        const maxSize = <%=config.maxSize%>;
 
         const fileInput = document.getElementById('fileInput');
         const MainPreview = document.getElementById('MainPreview');
