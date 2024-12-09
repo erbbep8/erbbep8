@@ -24,7 +24,7 @@
 
                     </th>
                     <th class="text-right">
-                        <img src="/photolist/<%= result[0].login_id%>/<%= result[0].filename%>" class="mx-auto d-block text-right" style="width:40%"><br>
+                        <img src="/photolist/<%= result[0].login_id%>/<%= result[0].filename%>" class="mx-auto d-block text-right" width="200" height="200"><br>
                     </th>
                     <th>
                         <p class="h6">name: <%= result[0].filename%></p>
@@ -41,7 +41,7 @@
                   <tr>
                     <%if( result[0].raw1.filename != "") {%>
                     <th>
-                        <img src="/photolist/<%= result[0].login_id%>/<%= result[0].raw1.filename%>" class="float-start"><br>
+                        <img src="/photolist/<%= result[0].login_id%>/<%= result[0].raw1.filename%>" class="float-start" width="200" height="200"><br>
                       </th>
                       <th>
                         <p class="h6">name: <%= result[0].raw1.filename%></p>
@@ -54,7 +54,7 @@
                     <%if( result[0].raw2.filename != "") {%>
                     <th>
                         
-                        <img src="/photolist/<%= result[0].login_id%>/<%= result[0].raw2.filename%>" class="float-start"><br>             
+                        <img src="/photolist/<%= result[0].login_id%>/<%= result[0].raw2.filename%>" class="float-start" width="200" height="200"><br>             
                         
                     </th>
                     <th>
@@ -115,7 +115,7 @@
                 s +=' <tr>';
                 s +='<th> </th>';
                 s +='<th class="text-center">';
-                s +=" <img src=/photolist/<%= result[0].login_id%>/"+preFile.filename +"> ";
+                s +=" <img src=/photolist/<%= result[0].login_id%>/"+preFile.filename +" width='200' height='200'> ";
                 s +=' </th>';
                 s +=' <th>';
                 s +=" <p class='h6'>name:" + preFile.filename + "</p>";
@@ -137,7 +137,7 @@
               s +=' <tr>';
               if(preFile.raw1.filename != "")
               {
-                s +=" <th class='text-right'> <img src=/photolist/<%= result[0].login_id%>/"+preFile.raw1.filename+"> ";
+                s +=" <th class='text-right'> <img src=/photolist/<%= result[0].login_id%>/"+preFile.raw1.filename+" width='200' height='200'> ";
                 s +=' </th>';
                 s +=' <th>';
                 s +=" <p class='h6'>name:" +preFile.raw1.filename+ "</p>";
@@ -150,7 +150,7 @@
               if(preFile.raw2.filename != "")
               {
                 s +=' <th class="text-right">';
-                s +=" <img src=/photolist/<%= result[0].login_id%>/"+preFile.raw2.filename+"> ";
+                s +=" <img src=/photolist/<%= result[0].login_id%>/"+preFile.raw2.filename+"  width='200' height='200'> ";
                 s +=' </th>';
                 s +=' <th>';
                 s +=" <p class='h6'>name:" +preFile.raw2.filename+ "</p>";
@@ -200,7 +200,7 @@
                 s +=' <tr>';
                 s +='<th> </th>';
                 s +='<th class="text-center">';
-                s +=" <img src=/photolist/<%= result[0].login_id%>/"+nextFile.filename +"> ";
+                s +=" <img src=/photolist/<%= result[0].login_id%>/"+nextFile.filename +" width='200' height='200'> ";
                 s +=' </th>';
                 s +=' <th>';
                 s +=" <p class='h6'>name:" + nextFile.filename + "</p>";
@@ -222,7 +222,7 @@
               s +=' <tr>';
               if(nextFile.raw1.filename != "")
               {
-                s +=" <th class='text-right'> <img src=/photolist/<%= result[0].login_id%>/"+nextFile.raw1.filename+"> ";
+                s +=" <th class='text-right'> <img src=/photolist/<%= result[0].login_id%>/"+nextFile.raw1.filename+" width='200' height='200'> ";
                 s +=' </th>';
                 s +=' <th>';
                 s +=" <p class='h6'>name:" +nextFile.raw1.filename+ "</p>";
@@ -235,7 +235,7 @@
               if(nextFile.raw2.filename != "")
               {
                 s +=' <th class="text-right">';
-                s +=" <img src=/photolist/<%= result[0].login_id%>/"+nextFile.raw2.filename+"> ";
+                s +=" <img src=/photolist/<%= result[0].login_id%>/"+nextFile.raw2.filename+"  width='200' height='200'> ";
                 s +=' </th>';
                 s +=' <th>';
                 s +=" <p class='h6'>name:" +nextFile.raw2.filename+ "</p>";
