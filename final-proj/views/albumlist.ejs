@@ -1,73 +1,89 @@
 <%- include('partials/header') %>
 <table>
-  <thead><tr>
-  <th width="300px" bgcolor="#7bb3e0" style=text-align:center>
-    <h1 style="font-family: Impact"><font color="#005AB5">Welcome!</font></h1>
-  </th>
-  <th width="10px" bgcolor="#ffffff"></th>
-  <th colspan="2" style=text-align:center>
-    <h2 style="font-family: Impact"><font color="#005AB5">Album Lists</font></h2>
-  </th></tr></thead>
+  <thead>
+    <tr>
+      <th width="300px" bgcolor="#7bb3e0" style=text-align:center>
+         <h1 style="font-family: Impact"><font color="#005AB5">Welcome!</font></h1>
+      </th>
+      <th width="10px" bgcolor="#ffffff"></th>
+      <th colspan="2" style=text-align:center>
+         <h2 style="font-family: Impact"><font color="#005AB5">Album Lists</font></h2>
+      </th>
+    </tr>
+  </thead>
   <tbody>
-  <tr>
-  <th width="300px" bgcolor="#7bb3e0" style=text-align:center>
-    <h4 style="font-family: Leelawadee"><%= profile[0].display_name %></h4>
-  </th>
-  <th width="10px" bgcolor="#ffffff"></th>
-  <th width="250px" style=text-align:center>
-    <h4 style="font-family: Impact">Yours</h4>
-  </th>
-  <th style=text-align:center>
-    <h4 width="700px" style="font-family: Impact">Others</h4>
-  </th></tr>
-  <tr>
-  <th width="300px" bgcolor="#7bb3e0" style=text-align:center>
-    <a href="/users/editUser">
-      <img id=profile-pic src="/top/<%= profile[0].login_id %>/<%= profile[0].profile_pic %>">
-    </a></img></th>
-  <th width="10px" bgcolor="#ffffff"></th>
-  <td width="250px">
-    <a href="/photolist"><img id=album-thumbnail src="/top/<%= profile[0].login_id %>/<%= profile[0].profile_pic %>">
-    </a></img></td>
-  <td width="700px"><div class="slideshow-container">
-        <% result.forEach((item) => { %>
-      <div class="mySlides fade">
-        <a href="/photolist?albumlist=<%= item.login_id %>">
-        <img src="/top/<%= item.login_id %>/<%= item.profile_pic %>" style="width: 100%"></a>
-        <span style="position: absolute; top: 0; left: 0; background-color:rgb(113, 175, 255);">
-        <font color="white">&nbsp;<%= item.login_id %>&nbsp;</font></span>
-      </div>
-        <% }) %>
-    <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
-    <a class="next" onclick="plusSlides(1)">&#10095;</a>
-      </div>
-  </td>
-  </tr>
+    <tr>
+      <th width="300px" bgcolor="#7bb3e0" style=text-align:center>
+         <h4 style="font-family: Leelawadee"><%= profile[0].display_name %></h4>
+      </th>
+      <th width="10px" bgcolor="#ffffff"></th>
+      <th width="250px" style=text-align:center>
+         <h4 style="font-family: Impact">Yours</h4></th>
+      <th style=text-align:center>
+         <h4 width="700px" style="font-family: Impact">Others</h4>
+      </th>
+    </tr>
+    <tr>
+      <th width="300px" bgcolor="#7bb3e0" style=text-align:center>
+        <a href="/users/editUser">
+          <% if (profile[0].profile_pic == undefined || profile[0].profile_pic == "") { %>
+          <img id=noimage src="../no image_p.JPG" style="width: 80%">
+          <% } else { %>
+          <img id=profile-pic src="/top/<%= profile[0].login_id %>/<%= profile[0].profile_pic %>">
+          <% } %>
+        </a>
+      </th>
+      <th width="10px" bgcolor="#ffffff"></th>
+        <td width="250px">
+          <a href="/photolist?albumlist=<%=profile[0].login_id%>">
+            <% if (profile[0].profile_pic == undefined || profile[0].profile_pic == "") { %>
+            <img id=album-noimage src="../no image.jpg" style="width: 100%">
+            <% } else { %>
+            <img id=album-thumbnail src="/top/<%= profile[0].login_id %>/<%= profile[0].profile_pic %>">
+            <% } %>
+          </a>
+        </td>
+        <td width="700px"><div class="slideshow-container">
+          <% result.forEach((item) => { %>
+            <div class="mySlides">
+              <a href="/photolist?albumlist=<%= item.login_id %>">
+                <% if (item.profile_pic == undefined || item.profile_pic == "") { %>
+                   <img src="../no image.jpg" style="width: 100%">
+                <% } else { %>   
+                   <img src="/top/<%= item.login_id %>/<%= item.profile_pic %>" style="width: 100%">
+                <% } %>
+              </a>       
+            <span style="position: absolute; top: 0; left: 0; background-color:rgb(113, 175, 255);">
+            <font color="white">&nbsp;<%= item.login_id %>&nbsp;</font></span>
+            </div>
+          <% }) %>
+            <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+            <a class="next" onclick="plusSlides(1)">&#10095;</a>
+        </td>
+    </tr>
   </tbody>
 </table>
 
 <script>
   let slideIndex = 0;
     showSlides(slideIndex);      
-    function plusSlides(n) {
-    showSlides(slideIndex += n);
-}
-    function currentSlide(n) {
-    showSlides(slideIndex = n);
-}
-    function showSlides(n) {
-      let i;
-      let slides = document.getElementsByClassName("mySlides");
-    if (n >= slides.length) {slideIndex = 0}
-      if (n < 0) {slideIndex = slides.length -1}
+      function plusSlides(n) {
+        showSlides(slideIndex += n);
+      }
+      function currentSlide(n) {
+        showSlides(slideIndex = n);
+      }
+      function showSlides(n) {
+        let i;
+        let slides = document.getElementsByClassName("mySlides");
+        if (n >= slides.length) {slideIndex = 0}
+        if (n < 0) {slideIndex = slides.length -1}
         for (i = 0; i < slides.length; i++) {
           slides[i].style.display = "none";
-}
+        }
           slides[slideIndex].style.display = "block";
-}
-setInterval(() => { plusSlides(1); }, 3000);
+      }
 </script>
-</article>
   
 <style>
 html, 
@@ -77,7 +93,7 @@ html,
   padding:0;
 }  
 #profile-pic {
-  width: 200px;
+  width: 250px;
     margin: 0;
       border-radius: 50%;
       border-style: solid ;
@@ -86,7 +102,25 @@ html,
       aspect-ratio: 1 / 1;
       object-fit: cover
 }
+#noimage {
+  width: 200px;
+    margin: 0;
+      border-radius: 50%;
+      border-style: solid ;
+      border-color: #ffffff;
+      border-width: 3;
+      aspect-ratio: 1 / 1;
+      object-fit: cover  
+}
 #album-thumbnail {
+  position: sticky;
+  width: 250px;
+  border-style: dotted;
+  border-color: #7bb3e0;
+  border-width: 3;
+  object-fit: cover; 
+}
+#album-noimage {
   position: sticky;
   width: 250px;
   border-style: dotted;
@@ -125,15 +159,6 @@ html,
 }
 .prev:hover, .next:hover {
   background-color: rgba(22, 106, 175, 0.37);
-}
-/* Fading animation */
-.fade {
-  animation-name: fade;
-  animation-duration: 3s;
-}
-@keyframes fade {
-  from {opacity: .4}
-  to {opacity: 1}
 }
 </style>
 <%- include('partials/footer') %>
