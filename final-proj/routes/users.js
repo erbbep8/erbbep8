@@ -9,6 +9,8 @@ const multer = require('multer');
 const upload = multer({ dest: 'data/upload/' });
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+const { helper } = require("../common_modules/config.js");
+const { utf8Name, getUniqueFilename, isValidFilename, normalizePath, isPathWithinBaseDir } = helper;
 
 /* GET users listing. */
 router.use((req, res, next) => {
@@ -36,14 +38,18 @@ router.post('/addUser', upload.single("profile_pic"), async (req, res, next) => 
         console.log("Failed to hash password");
       };
 
-      if (req.file) req.body.profile_pic = req.file.originalname;
+      let utf8FileName;
+      if (req.file) {
+        utf8FileName = utf8Name(getUniqueFilename(req.file.originalname));
+        req.body.profile_pic = utf8FileName;
+      }
 
       rtn = await client.db("PhotoShareShare").collection("user_profile").insertOne(req.body);
       if (!fs.existsSync('./data/' + req.body.login_id))
         fs.mkdirSync('./data/' + req.body.login_id);
 
       if (req.file)
-        fs.renameSync(req.file.path, "./data/" + req.body.login_id + "/" + req.file.originalname);
+        fs.renameSync(req.file.path, "./data/" + req.body.login_id + "/" + utf8FileName);
       res.redirect('/login?msg=newdone');
     } else {
       req.body.msg = "exist";
@@ -100,7 +106,8 @@ router.post('/editUser', isAuthenticated, upload.single("profile_pic"), async (r
             if (fs.existsSync(file)) fs.unlinkSync(file);
           }
 
-          let newfile = "./data/" + req.body.login_id + "/" + req.file.originalname;
+          let utf8FileName = utf8Name(getUniqueFilename(req.file.originalname));
+          let newfile = "./data/" + req.body.login_id + "/" + utf8FileName;
           fs.renameSync(req.file.path, newfile);
         }
       } else {
@@ -146,23 +153,5 @@ router.get('/:uid/:filename', isAuthenticated, (req, res, next) => {
     res.sendFile(filePath);
   })
 });
-
-router.get('/test', isAuthenticated, async (req, res, next) => {
-  try {
-    await client.connect();
-    let searchcondition = {login_id: req.query.album_id, filename: req.query.filename, likeBy: {$ne: req.session.loginID }};
-    result = await client.db("PhotoShareShare").collection("photo_collection").updateOne(
-      searchcondition,
-      { $inc: {likeCount: 1},
-        $push: {likeBy: req.session.loginID}
-      }
-    );
-    res.json(result);
-  } catch (err) {
-    console.log(err.name, err.message)
-  } finally {
-    client.close;
-  }
-})
 
 module.exports = router;
