@@ -79,9 +79,11 @@ router.post('/editUser', isAuthenticated, upload.single("profile_pic"), async (r
   try {
     req.body.password = await bcrypt.hash(req.body.password, saltRounds);
     let pic_filename = "";
-    if (req.file)
-      pic_filename = req.file.originalname;
-    else
+    let utf8FileName;
+    if (req.file) {
+      utf8FileName = utf8Name(getUniqueFilename(req.file.originalname));
+      pic_filename = utf8FileName;
+    } else
       pic_filename = req.body.old_photo;
 
     try {
@@ -106,7 +108,6 @@ router.post('/editUser', isAuthenticated, upload.single("profile_pic"), async (r
             if (fs.existsSync(file)) fs.unlinkSync(file);
           }
 
-          let utf8FileName = utf8Name(getUniqueFilename(req.file.originalname));
           let newfile = "./data/" + req.body.login_id + "/" + utf8FileName;
           fs.renameSync(req.file.path, newfile);
         }
