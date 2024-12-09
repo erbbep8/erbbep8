@@ -10,7 +10,7 @@
                     <th class="text-left"><button type="button" onclick=btnActionB()> 後一張 </button></th>
                     <%if(currentuser == result[0].login_id) {%>
                       <th class="text-left">
-                        <button type="submit " onclick="btnDele('<%= result[0].filename %>')">刪除圖片</button>
+                        <button type="submit " onclick="btnDele()">刪除圖片</button>
                     <%} %>    
                   </tr>
 
@@ -74,11 +74,11 @@
    
       <script>
       
-      function btnDele(dataId){
+      function btnDele(){
       
         alert("刪除此圖片:" +document.getElementById('hiddenField').value);
  
-        fetch('/list/delePhoto?filename='+ dataId , { method: 'GET' })
+        fetch('/list/delePhoto?filename='+ document.getElementById('hiddenField').value , { method: 'GET' })
         .then(response => response.json()) 
         .then(data => { console.log('Success:', data);  window.history.back();}) 
         .catch(error => { console.error('Error:', error); }); 
