@@ -2,36 +2,29 @@
  
     <form action ="/list/delePhoto" method="get">
 
-        <div class="container p-5 my-5 border" >
-            <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th class="text-right"><button type="button" onclick=btnActionF()> 前一張</button> </th>
-                    <th class="text-left"><button type="button" onclick=btnActionB()> 後一張 </button></th>
-                    <%if(currentuser == result[0].login_id) {%>
-                      <th class="text-left">
-                        <button type="submit " onclick="btnDele()">刪除圖片</button>
-                    <%} %>    
-                  </tr>
-
-                </thead>
-            </table>              
+        <div class="container p-5 my-5 border" >             
           <div class="user-details"  id="photoShow">
             <table class="table table-striped">
                 <thead>
                   <tr >
                     <th>
-
+                      <th class="text-right" ><button type="button"  class="btn btn-secondary" onclick=btnActionF()> 前一張</button> </th>
                     </th>
                     <th class="text-right">
-                        <img src="/photolist/<%= result[0].login_id%>/<%= result[0].filename%>" class="mx-auto d-block text-right" width="200" height="200"><br>
+                        <img src="/photolist/<%= result[0].login_id%>/<%= result[0].filename%>" class="mx-auto d-block text-right" width="450" height="450"><br>
                     </th>
-                    <th>
-                        <p class="h6">name: <%= result[0].filename%></p>
-                        <p class="h6">ISO: <%= result[0].ISO%></p>
-                        <p class="h6">aperture: <%= result[0].aperture%></p>
-                        <p class="h6">shutter: <%= result[0].shutter%></p>
-                        <p class="h6">EV: <%= result[0].EV%></p>
+                    <th class="text-left" ><button type="button" class="btn btn-secondary" onclick=btnActionB()> 後一張 </button></th>
+                    <th width="10">
+                        <p class="h4" style="font-family: Leelawadee" >Name: <%= result[0].filename%></p>
+                        <p class="h4" style="font-family: Leelawadee">ISO: <%= result[0].ISO%></p>
+                        <p class="h4" style="font-family: Leelawadee">Aperture: <%= result[0].aperture%></p>
+                        <p class="h4" style="font-family: Leelawadee">Shutter: <%= result[0].shutter%></p>
+                        <p class="h4" style="font-family: Leelawadee">EV: <%= result[0].EV%></p>
+                    </th>
+                    <%if(currentuser == result[0].login_id) {%>
+                      <th class="text-left">
+                        <button type="submit " class="btn btn-secondary" onclick="btnDele()">刪除圖片</button>
+                    <%} %> 
                   </tr>
                 </thead>
             </table>  
@@ -40,29 +33,29 @@
                 <thead>
                   <tr>
                     <%if( result[0].raw1.filename != "") {%>
-                    <th>
-                        <img src="/photolist/<%= result[0].login_id%>/<%= result[0].raw1.filename%>" class="float-start" width="200" height="200"><br>
+                    <th >
+                        <img src="/photolist/<%= result[0].login_id%>/<%= result[0].raw1.filename%>" class="float-start" width="250" height="250"><br>
                       </th>
-                      <th>
-                        <p class="h6">name: <%= result[0].raw1.filename%></p>
-                        <p class="h6">ISO: <%= result[0].raw1.ISO%></p>
-                        <p class="h6">aperture: <%= result[0].raw1.aperture%></p>
-                        <p class="h6">shutter: <%= result[0].raw1.shutter%></p>
-                        <p class="h6">EV: <%= result[0].raw1.EV%></p>
+                      <th >
+                        <p class="h6" style="font-family: Leelawadee">Name: <%= result[0].raw1.filename%></p>
+                        <p class="h6" style="font-family: Leelawadee">ISO: <%= result[0].raw1.ISO%></p>
+                        <p class="h6" style="font-family: Leelawadee">Aperture: <%= result[0].raw1.aperture%></p>
+                        <p class="h6" style="font-family: Leelawadee">Shutter: <%= result[0].raw1.shutter%></p>
+                        <p class="h6" style="font-family: Leelawadee">EV: <%= result[0].raw1.EV%></p>
                     </th>
                     <%} %> 
                     <%if( result[0].raw2.filename != "") {%>
                     <th>
                         
-                        <img src="/photolist/<%= result[0].login_id%>/<%= result[0].raw2.filename%>" class="float-start" width="200" height="200"><br>             
+                        <img src="/photolist/<%= result[0].login_id%>/<%= result[0].raw2.filename%>" class="float-start" width="250" height="250"><br>             
                         
                     </th>
-                    <th>
-                        <p class="h6">name: <%= result[0].raw2.filename%></p>
-                        <p class="h6">ISO: <%= result[0].raw2.ISO%></p>
-                        <p class="h6">aperture: <%= result[0].raw2.aperture%></p>
-                        <p class="h6">shutter: <%= result[0].raw2.shutter%></p>
-                        <p class="h6">EV: <%= result[0].raw2.EV%></p>
+                    <th >
+                        <p class="h6" style="font-family: Leelawadee">Name: <%= result[0].raw2.filename%></p>
+                        <p class="h6" style="font-family: Leelawadee">ISO: <%= result[0].raw2.ISO%></p>
+                        <p class="h6" style="font-family: Leelawadee">Aperture: <%= result[0].raw2.aperture%></p>
+                        <p class="h6" style="font-family: Leelawadee">Shutter: <%= result[0].raw2.shutter%></p>
+                        <p class="h6" style="font-family: Leelawadee">EV: <%= result[0].raw2.EV%></p>
                     </th>
                     <%} %> 
                   </tr>
@@ -74,8 +67,8 @@
    
       <script>
       
+      //刪除圖片
       function btnDele(){
-      
         alert("刪除此圖片:" +document.getElementById('hiddenField').value);
  
         fetch('/list/delePhoto?filename='+ document.getElementById('hiddenField').value , { method: 'GET' })
@@ -87,11 +80,7 @@
 
       // 向前一條數據
           function btnActionF(){
-          var login_id = "<%= result[0].login_id %>";
-          var filename = "<%= result[0].filename %>";
-          var s = "";
           var hiddenField = document.getElementById('hiddenField').value;
-          var preFile = "";
           var curIndex = 0;
 
           var picArray = '<%- JSON.stringify(resultAll )%>';
@@ -107,76 +96,14 @@
             alert("這是第一張照片！");
           }
           else{
-              preFile = JSON.parse(picArray)[curIndex-1];
-
-                //主圖
-                s +='<table class="table table-striped">';
-                s +=' <thead>';
-                s +=' <tr>';
-                s +='<th> </th>';
-                s +='<th class="text-center">';
-                s +=" <img src=/photolist/<%= result[0].login_id%>/"+preFile.filename +" width='200' height='200'> ";
-                s +=' </th>';
-                s +=' <th>';
-                s +=" <p class='h6'>name:" + preFile.filename + "</p>";
-                s +=" <p class='h6'>ISO:" + preFile.ISO + "</p>";
-                s +=" <p class='h6'>aperture: " + preFile.aperture + "</p>";
-                s +=" <p class='h6'>shutter:" + preFile.shutter + "</p>";
-                s +=" <p class='h6'>EV:" + preFile.EV + "</p>";
-                s +=' </th>';
-                s +=' </tr>';
-                s +=' </thead>';
-                s +=' </table>';
-
-                //當前頁面的filenname,隱藏數據
-                s +="<input type='hidden' id='hiddenField' name="+ preFile.filename + " value="+ preFile.filename +">";
-
-                //兩個小圖
-              s +='<table class="table table-striped">';
-              s +=' <thead>';
-              s +=' <tr>';
-              if(preFile.raw1.filename != "")
-              {
-                s +=" <th class='text-right'> <img src=/photolist/<%= result[0].login_id%>/"+preFile.raw1.filename+" width='200' height='200'> ";
-                s +=' </th>';
-                s +=' <th>';
-                s +=" <p class='h6'>name:" +preFile.raw1.filename+ "</p>";
-                s +=" <p class='h6'>ISO:" +preFile.raw1.ISO+ "</p>";
-                s +=" <p class='h6'>aperture: " +preFile.raw1.aperture+ "</p>";
-                s +=" <p class='h6'>shutter:" +preFile.raw1.shutter+ "</p>";
-                s +=" <p class='h6' >EV:" +preFile.raw1.EV+ "</p>";
-                s +=' </th>';
-              }
-              if(preFile.raw2.filename != "")
-              {
-                s +=' <th class="text-right">';
-                s +=" <img src=/photolist/<%= result[0].login_id%>/"+preFile.raw2.filename+"  width='200' height='200'> ";
-                s +=' </th>';
-                s +=' <th>';
-                s +=" <p class='h6'>name:" +preFile.raw2.filename+ "</p>";
-                s +=" <p class='h6'>ISO:" +preFile.raw2.ISO+ "</p>";
-                s +=" <p class='h6'>aperture: " +preFile.raw2.aperture+ "</p>";
-                s +=" <p class='h6'>shutter:" +preFile.raw2.shutter+ "</p>";
-                s +=" <p class='h6'>EV:" +preFile.raw2.EV+ "</p>";
-                s +=' </th>';
-              }
-              s +=' </tr>';
-              s +=' </thead>';
-              s +=' </table>';
-
-              document.getElementById("photoShow").innerHTML= s;
-            }
+              drawPage(JSON.parse(picArray)[curIndex-1]);
+           }
           }
             
 
       
       // 向後一條數據
-        function btnActionB(){
-             
-          var login_id = "<%= result[0].login_id %>";
-          var filename = "<%= result[0].filename %>";
-          var s = "";
-          var nextFile = "";
+        function btnActionB(){            
           var curIndex = 0;
           let hiddenField = document.getElementById('hiddenField').value;
 
@@ -192,57 +119,71 @@
             alert("這是最後一張照片！");
           }
           else{
-            nextFile = JSON.parse(picArray)[curIndex+1];
+            drawPage(JSON.parse(picArray)[curIndex+1]);
+            }
+        }
 
-                //主圖
-                s +='<table class="table table-striped">';
+        //頁面重新draw
+        function drawPage(dFile)
+        {
+          var s ="";
+          var loginID=" <%= result[0].login_id %>";
+          var curUser=" <%= currentuser %>";
+
+           //主圖
+           s +='<table class="table table-striped">';
                 s +=' <thead>';
                 s +=' <tr>';
-                s +='<th> </th>';
-                s +='<th class="text-center">';
-                s +=" <img src=/photolist/<%= result[0].login_id%>/"+nextFile.filename +" width='200' height='200'> ";
+                s +=' <th class="text-right" ><button type="button"  class="btn btn-secondary" onclick=btnActionF()> 前一張</button> </th>';
+                s +=' <th class="text-center">';
+                s +=` <img src="/photolist/<%= result[0].login_id%>/${dFile.filename}" width='450' height='450'> `;
                 s +=' </th>';
-                s +=' <th>';
-                s +=" <p class='h6'>name:" + nextFile.filename + "</p>";
-                s +=" <p class='h6'>ISO:" + nextFile.ISO + "</p>";
-                s +=" <p class='h6'>aperture: " + nextFile.aperture + "</p>";
-                s +=" <p class='h6'>shutter:" + nextFile.shutter + "</p>";
-                s +=" <p class='h6'>EV:" + nextFile.EV + "</p>";
+                s +=' <th class="text-right" ><button type="button" class="btn btn-secondary" onclick=btnActionB()> 後一張</button> </th>';
+                s +=' <th width="10">';
+                s +=" <p class='h4' style='font-family: Leelawadee'>Name:" + dFile.filename + "</p>";
+                s +=" <p class='h4' style='font-family: Leelawadee'>ISO:" + dFile.ISO + "</p>";
+                s +=" <p class='h4' style='font-family: Leelawadee'>Aperture: " + dFile.aperture + "</p>";
+                s +=" <p class='h4' style='font-family: Leelawadee'>Shutter:" + dFile.shutter + "</p>";
+                s +=" <p class='h4' style='font-family: Leelawadee'>EV:" + dFile.EV + "</p>";
                 s +=' </th>';
+                if( loginID == curUser)
+                {
+                  s +=' <th class="text-left"> <button type="submit "  class="btn btn-secondary" onclick="btnDele()">刪除圖片</button></th>';
+                }
                 s +=' </tr>';
                 s +=' </thead>';
                 s +=' </table>';
 
                 //當前頁面的filenname,隱藏數據
-                s +="<input type='hidden' id='hiddenField' name="+ nextFile.filename + " value="+ nextFile.filename +">";
+                s +="<input type='hidden' id='hiddenField' name="+ dFile.filename + " value="+ dFile.filename +">";
 
                 //兩個小圖
               s +='<table class="table table-striped">';
               s +=' <thead>';
               s +=' <tr>';
-              if(nextFile.raw1.filename != "")
+              if(dFile.raw1.filename != "")
               {
-                s +=" <th class='text-right'> <img src=/photolist/<%= result[0].login_id%>/"+nextFile.raw1.filename+" width='200' height='200'> ";
+                s +=` <th class='text-right'> <img src="/photolist/<%= result[0].login_id%>/${dFile.raw1.filename}" width='250' height='250'> `;
                 s +=' </th>';
                 s +=' <th>';
-                s +=" <p class='h6'>name:" +nextFile.raw1.filename+ "</p>";
-                s +=" <p class='h6'>ISO:" +nextFile.raw1.ISO+ "</p>";
-                s +=" <p class='h6'>aperture: " +nextFile.raw1.aperture+ "</p>";
-                s +=" <p class='h6'>shutter:" +nextFile.raw1.shutter+ "</p>";
-                s +=" <p class='h6' >EV:" +nextFile.raw1.EV+ "</p>";
+                s +=" <p class='h6' style='font-family: Leelawadee'>Name:" +dFile.raw1.filename+ "</p>";
+                s +=" <p class='h6' style='font-family: Leelawadee'>ISO:" +dFile.raw1.ISO+ "</p>";
+                s +=" <p class='h6' style='font-family: Leelawadee'>Aperture: " +dFile.raw1.aperture+ "</p>";
+                s +=" <p class='h6' style='font-family: Leelawadee'>Shutter:" +dFile.raw1.shutter+ "</p>";
+                s +=" <p class='h6' style='font-family: Leelawadee'>EV:" +dFile.raw1.EV+ "</p>";
                 s +=' </th>';
               }
-              if(nextFile.raw2.filename != "")
+              if(dFile.raw2.filename != "")
               {
                 s +=' <th class="text-right">';
-                s +=" <img src=/photolist/<%= result[0].login_id%>/"+nextFile.raw2.filename+"  width='200' height='200'> ";
+                s +=` <th class='text-right'> <img src="/photolist/<%= result[0].login_id%>/${dFile.raw2.filename}" width='250' height='250'> `;             
                 s +=' </th>';
                 s +=' <th>';
-                s +=" <p class='h6'>name:" +nextFile.raw2.filename+ "</p>";
-                s +=" <p class='h6'>ISO:" +nextFile.raw2.ISO+ "</p>";
-                s +=" <p class='h6'>aperture: " +nextFile.raw2.aperture+ "</p>";
-                s +=" <p class='h6'>shutter:" +nextFile.raw2.shutter+ "</p>";
-                s +=" <p class='h6'>EV:" +nextFile.raw2.EV+ "</p>";
+                s +=" <p class='h6' style='font-family: Leelawadee'>Name:" +dFile.raw2.filename+ "</p>";
+                s +=" <p class='h6' style='font-family: Leelawadee'>ISO:" +dFile.raw2.ISO+ "</p>";
+                s +=" <p class='h6' style='font-family: Leelawadee'>Aperture: " +dFile.raw2.aperture+ "</p>";
+                s +=" <p class='h6' style='font-family: Leelawadee'>Shutter:" +dFile.raw2.shutter+ "</p>";
+                s +=" <p class='h6' style='font-family: Leelawadee'>EV:" +dFile.raw2.EV+ "</p>";
                 s +=' </th>';
               }
               s +=' </tr>';
@@ -250,7 +191,6 @@
               s +=' </table>';
 
               document.getElementById("photoShow").innerHTML= s;
-            }
         }
       </script>
 
