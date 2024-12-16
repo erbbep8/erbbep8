@@ -5,7 +5,12 @@ const {MongoClient, ObjectId} = require("mongodb");
 const client = new MongoClient("mongodb://localhost:27017");
 const { isAuthenticated } = require("./authenticate.js");
 const fs = require('fs');
- 
+
+router.use((req, res, next) => {
+  res.locals.currentUser = req.session.loginID;
+  next();
+});
+
 router.get('/', isAuthenticated, async (req, res, next) => { 
     let s = "";
     let result = [];
