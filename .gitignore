@@ -160,4 +160,8 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
-Documents/~$state_diagram.pptx
+
+## vscode add by user select add to .gitignore
+Documents/~$*.*
+.vscode/settings.json
+Documents/~$lliam-Photo Upload Guide and RESTful API.docx
